@@ -1,0 +1,40 @@
+Data: Two datasets on Transportation Fatalities 1975-2020
+Data source:  Insurance Institute for Highway Safety (IIHS) (Downloaded 11/10/2022)
+URL: https://www.iihs.org/topics/fatality-statistics/detail/yearly-snapshot
+Records: n = 46; 17
+
+
+Transportation Fatalities By Year
+Grouped by years, n=46 years (1975-2020)
+
+ATTRIBUTES
+Year
+Population
+Car_Occupant
+Pedestrian
+Motorcycle
+Bicycle
+Trucks
+Total
+Car_Per_100K
+Ped_Per_100K
+Motorcycle_Per_100K
+Bicycle_Per_100K
+Trucks_Per_100K
+Total_Per_100K
+
+
+
+Transportation Fatalities By Age and Gender
+Grouped by age bins, n=17 age bins (<13-85+)
+
+ATTRIBUTES
+MalePop
+MaleDeaths
+MaleRate_Per_100K
+FemalePop
+FemaleDeaths
+FemaleRate_Per_100K
+TotalPop
+TotalDeaths
+TotalRate
