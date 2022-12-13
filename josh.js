@@ -1,26 +1,26 @@
-var select = document.createElement('select');
-var date = new Date();
-var year = date.getFullYear();
-for (var i = year - 4; i <= year + 3; i++) {
+var selectStart = document.getElementById("selectYear-start");
+for (var i = 1976; i <= 2020; i++) {
   var option = document.createElement('option');
-  option.value = option.innerHTML = i;
-  if (i === year) option.selected = true;
-  select.appendChild(option);
+  option.value = i;
+  option.innerHTML = i;
+  selectStart.appendChild(option);
 }
-document.body.appendChild(select);
 
+var selectEnd = document.getElementById("selectYear-end");
+for (var i = 1975; i <= 2020; i++) {
+  var option = document.createElement('option');
+  option.value = i;
+  option.innerHTML = i;
+  selectEnd.appendChild(option);
+}
 
-function dataPreProcessor_ByYear(row) {
-    return {
-        year: +row['Year'],
-        pop: +row['Population'],
-        car_occupant: +row['Car_Occupant'],
-        pedestrian: +row['Pedestrian'],
-        motorcycle: +row['Motorcycle'],
-        bike: +row['Bicycle'],
-        truck: +row['Trucks'],
-        total: +row['Total']
-    };
+function onYearChanged() {
+    var selectStart = d3.select('#selectYear-start').node();
+    var selectEnd = d3.select('#selectYear-end').node();
+    var startYear = Number(selectStart.options[selectStart.selectedIndex].value);
+    var endYear = Number(selectEnd.options[selectEnd.selectedIndex].value);
+
+    updateChart(startYear, endYear);
 }
 
 function dataPreProcessor_ByYear_ByAge(row) {
@@ -41,21 +41,70 @@ var data;
 d3.csv(filename, dataPreProcessor_ByYear_ByAge).then(function(dataset) {
     data = dataset;
 
-    updateChart('All');
+    updateChart(1975, 2020);
+});
+
+function updateChart(start, end) {
+    if (end > start) {
+        createLineGraph(start, end);
+    } else if (end == start) {
+        createBarGraph(start);
+    }
+}
+
+function createLineGraph(start, end) {
+    var selectedYears = data.filter(d => d.year >= start && d.year <= end);
+
+    // reset Axes
+    svg.selectAll('.axis').remove();
+
+    // scale xAxis and yAxis
+    xScale = d3.scaleTime().domain([start, end]).range([110, 900])
+    yScale = d3.scaleLinear().domain([0, 22000]).range([600, 0])
+
+    // xAxis
+    xAxis = d3.axisBottom().scale(xScale).tickFormat(d3.format("d"));
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0,620)")
+        .call(xAxis)
+        .append("text")
+        .attr("x", (900+70)/2) //middle of the xAxis
+        .attr("y", "50") // a little bit below xAxis
+        .text("Year");
+
+
+    // yAxis
+    yAxis = d3.axisLeft().scale(yScale).ticks(10);
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(110,20)`) 
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", "-250")
+        .attr("y", "-75")
+        .attr("text-anchor", "end")
+        .text("Deaths")
 
     var sumstat = d3.nest()
         .key(d => d.age)
-        .entries(data);  
-    
+        .entries(selectedYears);  
+
     var ageGroupName = sumstat.map(d => d.key) 
     var color = d3.scaleOrdinal().domain(ageGroupName).range(colorbrewer.Set2[6])
 
+    // reset line graphs
+    svg.selectAll('.line-path').remove();
+
+    // create line graphs
     svg.selectAll(".line")
         .append("g")
         .attr("class", "line")
         .data(sumstat)
         .enter()
         .append("path")
+        .attr('class', 'line-path')
         .attr("d", function (d) {
             return d3.line()
                 .x(d => xScale(d.year))
@@ -65,52 +114,8 @@ d3.csv(filename, dataPreProcessor_ByYear_ByAge).then(function(dataset) {
         .attr("fill", "none")
         .attr("stroke", d => color(d.key))
         .attr("stroke-width", 2)
-});
-
-function updateChart(year) {
-    var selectedYear;
-
-    if (year === 'All') {
-        selectedYear = data.filter(d => d.year != year);
-    } else {
-        selectedYear = data.filter(d => d.year == year);
-    }
 }
 
-function onYearChanged() {
-    var select = d3.select('#selectYear').node();
-    var year = select.options[select.selectedIndex].value;
+function createBarGraph(year) {
 
-    updateChart(startYear, endYear);
 }
-
-
-//scale xAxis and yAxis
-xScale = d3.scaleTime().domain([1975, 2020]).range([110, 900])
-yScale = d3.scaleLinear().domain([0, 22000]).range([600, 0])
-
-// xAxis
-xAxis = d3.axisBottom().scale(xScale).tickFormat(d3.format("d"));
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0,620)")
-    .call(xAxis)
-    .append("text")
-    .attr("x", (900+70)/2) //middle of the xAxis
-    .attr("y", "50") // a little bit below xAxis
-    .text("Year");
-
-
-//yAxis
-yAxis = d3.axisLeft().scale(yScale).ticks(10);
-svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", `translate(110,20)`) //use variable in translate
-    .call(yAxis)
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("x", "-250")
-    .attr("y", "-75")
-    .attr("text-anchor", "end")
-    .text("Deaths")
-
