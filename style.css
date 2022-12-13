@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     background-color: #F3F1E6;
 }
@@ -50,3 +51,35 @@ body {
     border: 5px solid #CECCC3;
 }
 
+=======
+.axis path{
+    stroke:black;
+    stroke-width:2px ;
+}   
+
+.axis line{
+    stroke: black;
+    stroke-width: 1.5px;
+} 
+
+.axis text{
+    fill: black;
+    font-weight: bold;
+    font-size: 14px;
+    font-family:"Arial Black", Gadget, sans-serif;
+} 
+
+.legend text{
+    fill:  black;
+    font-family:"Arial Black", Gadget, sans-serif;
+}
+
+/** 
+The use of !important allows us to override the other styling preferences
+This is used for when the singular circle nodes are getting hovered
+**/
+.node:hover{
+    stroke-width: 7px !important;
+    opacity: 1 !important;
+}
+>>>>>>> steven
