@@ -69,7 +69,7 @@ var height = 600; // Height of chart
 // Create chart title
 svg.append("text")
     .attr("x", 485)
-    .attr("y", 30)
+    .attr("y", 40)
     .attr("text-anchor", "middle")
     .text("US Transportation Fatalities, by Age Group, 1975-2020")
     .style("fill", "black")
@@ -83,6 +83,9 @@ d3.csv(filename, dataPreProcessor_ByYear_ByAge).then(function(dataset) {
     data = dataset;
     updateChart(1975, 2020, visibility); // Create chart with default values
 });
+
+var chart2 = d3.select('#chart2');
+
 
 // Updates chart
 function updateChart(start, end, visibility) {
@@ -214,7 +217,7 @@ function createLineGraph(start, end, visibility) {
         });
 
     // Clear previous insight, if any
-    d3.select('#insights').selectAll('h3').remove();
+    d3.select('#chart2').selectAll('h3').remove();
 
     if (end > start) {
         generateInsight1(start, end, selectedYears);
@@ -228,13 +231,13 @@ function createLineGraph(start, end, visibility) {
     .attr("class", "legend");
 
     legend.append("circle")
-    .attr("cx", 1000)
+    .attr("cx", 950)
     .attr('cy', (d, i) => i * 30 + 275)
     .attr("r", 6)
     .style("fill", d => color(d.key))
 
     legend.append("text")
-    .attr("x", 1020)
+    .attr("x", 970)
     .attr("y", (d, i) => i * 30 + 280)
     .text(d => d.key)
 }
@@ -260,18 +263,17 @@ function generateInsight1(start, end, selectedYears) {
         changeAmount = (((sumEnd/sumStart)-1)*100).toFixed(2);
     }
 
-    d3.select("#insights")
-        .append('h3')
+   chart2.append('h3')
         .text(`Since ${start}, ` + `fatalities ${change} by ` + changeAmount + '%.');
 
     const sumStart_formatted = Intl.NumberFormat('en-US').format(sumStart); // Add comma if thousands involved
     const sumEnd_formatted = Intl.NumberFormat('en-US').format(sumEnd); // Add comma if thousands involved
 
-    d3.select("#insights")
-        .append('h3')
+    chart2.append('h3')
         .text(`${sumStart_formatted} ` + `people died on America's roads in ${start}` + '.');
 
-    d3.select("#insights")
-        .append('h3')
+    chart2.append('h3')
         .text(`${sumEnd_formatted} ` + `people died on America's roads in ${end}` + '.');
 }
+
+

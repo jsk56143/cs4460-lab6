@@ -6,6 +6,18 @@ body {
     border: 5px solid #CECCC3;
 }
 
+#controlPanel {
+    fill: black;
+    font-size: 24;
+    font-family: Arial Black;
+}
+
+#insights {
+    fill: black;
+    font-size: 24;
+    font-family: Arial Black;
+}
+
 .axis path {
     stroke:black;
     stroke-width:2px ;
@@ -30,5 +42,10 @@ body {
 
 .gridline {
     stroke-width: 0.2px;
+}
+
+#chart2 {
+    float: right;
+    border: 5px solid #CECCC3;
 }
 
