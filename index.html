@@ -11,17 +11,31 @@
     </div>
 
     <div id="steven">
-        <svg width="600" height="330" style="border: 1px solid #777;">
-            
+        <svg id = "steven-svg" width="600" height="330" style="border: 1px solid #777;">
         </svg>
     </div>
 
+    <div>
+        <label for="selectYear-start">Start Year: </label>
+        <select class="custom-select" id="selectYear-start" onchange="onYearChanged()">
+          <option selected value="1975">1975</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="selectYear-end">End Year: </label>
+        <select class="custom-select" id="selectYear-end" onchange="onYearChanged()">
+          <option selected value="2020">2020</option>
+        </select>
+    </div>
     <div id="josh">
-        <svg width="600" height="330" style="border: 1px solid #725;">
+        <svg id="josh-svg" width="1000" height="800" style="border: 1px solid #725;">
         </svg>
     </div>
 </body>
-<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
 <script src="./steven.js"></script>
 <script src="./josh.js"></script>
+<script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 </html>
