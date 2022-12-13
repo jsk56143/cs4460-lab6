@@ -41,7 +41,7 @@ function updateDemographic(selectDemographic) {
         .domain([200, 38824])
         .range([25,100])  // circle will be between 25 and 100 px wide
     
-      svg.selectAll("circle").remove();
+      svg.selectAll(".node").remove();
       d3.select("#steven").selectAll(".tooltip").remove()
 
       // creating the tooltip / hover
@@ -80,12 +80,14 @@ function updateDemographic(selectDemographic) {
       }
     
 
+      d3.selectAll('.circle-group').remove();
       
       //This creates a node that is each circle
       var node_1 = svg.selectAll("circle")
         .data(data)
         .enter()
         .append("g")
+        .attr('class', 'circle-group');
 
 
 
@@ -113,8 +115,11 @@ function updateDemographic(selectDemographic) {
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended));
+
+      d3.selectAll('.circle-text').remove();
       
       node_1.append("text")
+          .attr('class', 'circle-text')
         .style("text-anchor", "middle")  
         .text(function(d) {return d.Age});
 
@@ -149,12 +154,11 @@ function updateDemographic(selectDemographic) {
         d.fy = null;
       }
 
+      svg.selectAll('g.legend').remove();
+
       //Adding the legend of the graph
-      var legend = svg.selectAll("g.legend")
-      .data(data)
-      .enter()
-      .append("g")
-      .attr("class", "legend")
+      var legend = svg.append("g")
+      .attr("class", "legend");
 
  
       legend.append("circle")
