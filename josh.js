@@ -1,3 +1,4 @@
+// Add options to select dynamically instead of having like 46 option elements in the HTML file
 var selectStart = document.getElementById("selectYear-start");
 for (var i = 1976; i <= 2020; i++) {
   var option = document.createElement('option');
@@ -6,6 +7,7 @@ for (var i = 1976; i <= 2020; i++) {
   selectStart.appendChild(option);
 }
 
+// Add options to select dynamically
 var selectEnd = document.getElementById("selectYear-end");
 for (var i = 1975; i <= 2020; i++) {
   var option = document.createElement('option');
@@ -14,15 +16,39 @@ for (var i = 1975; i <= 2020; i++) {
   selectEnd.appendChild(option);
 }
 
+// Functionality for the select element.
+// Update chart based on the years chosen.
 function onYearChanged() {
     var selectStart = d3.select('#selectYear-start').node();
     var selectEnd = d3.select('#selectYear-end').node();
     var startYear = Number(selectStart.options[selectStart.selectedIndex].value);
     var endYear = Number(selectEnd.options[selectEnd.selectedIndex].value);
 
-    updateChart(startYear, endYear);
+    updateChart(startYear, endYear, visibility);
 }
 
+// Show or hide value text of button
+var button = document.getElementById('visibilityButton');
+button.addEventListener("click", ()=>{
+    if (button.innerText === "Show data points") {
+        button.innerText = "Hide data points";
+    } else {
+        button.innerText = "Show data points";
+    }
+})
+
+// Show or hide data points.
+var visibility = 'hidden';
+function visibleCircles() {
+    if (visibility === 'hidden') {
+        visibility = 'visible';
+    } else {
+        visibility = 'hidden';
+    }
+    onYearChanged();
+}
+
+// Prepare the data in a simpler way
 function dataPreProcessor_ByYear_ByAge(row) {
     return {
         year: +row['Year'],
@@ -33,17 +59,14 @@ function dataPreProcessor_ByYear_ByAge(row) {
     };
 }
 
-var svg = d3.select("#josh-svg")
-var chartG = svg.append('g')
+var svg = d3.select("#josh-svg") // SVG in which the chart is contained in
+var chartG = svg.append('g') // The chart or viz you see
     .attr('id', 'chartG')
     .attr("transform", "translate(0,60)");
-var chartG_width = chartG.offsetWidth;
-var chartG_height = chartG.offsetHeight;
+var width = 790; // Width of chart
+var height = 600; // Height of chart
 
-var width = 790;
-var height = 600;
-
-// Title
+// Create chart title
 svg.append("text")
     .attr("x", 485)
     .attr("y", 30)
@@ -58,17 +81,18 @@ const filename = "TransportationFatalities_ByYear_ByAge.csv";
 var data;
 d3.csv(filename, dataPreProcessor_ByYear_ByAge).then(function(dataset) {
     data = dataset;
-
-    updateChart(1975, 2020);
+    updateChart(1975, 2020, visibility); // Create chart with default values
 });
 
-function updateChart(start, end) {
+// Updates chart
+function updateChart(start, end, visibility) {
     if (end >= start) { // Ensures user doesn't select start: 2000 and end: 1985
-        createLineGraph(start, end);
+        createLineGraph(start, end, visibility);
     }
 }
 
-function createLineGraph(start, end) {
+// Creates the line graph (axes, labels, gridlines, lines, legend)
+function createLineGraph(start, end, visibility) {
     var selectedYears = data.filter(d => d.year >= start && d.year <= end);
 
     // Reset Axes and Gridlines
@@ -109,7 +133,6 @@ function createLineGraph(start, end) {
         .attr("y", "50") // a little bit below xAxis
         .text("Year");
 
-
     // yAxis
     yAxis = d3.axisLeft().scale(yScale).ticks(10);
     chartG.append("g")
@@ -127,8 +150,8 @@ function createLineGraph(start, end) {
         .key(d => d.age)
         .entries(selectedYears);  
 
-    var ageGroupName = sumstat.map(d => d.key) 
-    var color = d3.scaleOrdinal().domain(ageGroupName).range(colorbrewer.Set2[6])
+    var ageGroupName = sumstat.map(d => d.key);
+    var color = d3.scaleOrdinal().domain(ageGroupName).range(colorbrewer.Set2[6]);
 
     // Reset line graphs
     chartG.selectAll('.line-path').remove();
@@ -150,6 +173,45 @@ function createLineGraph(start, end) {
         .attr("fill", "none")
         .attr("stroke", d => color(d.key))
         .attr("stroke-width", 4);
+
+    // Reset circles
+    chartG.selectAll('.circle').remove();
+
+    // Create hoverable data points (circles)
+    var death_1 = chartG.selectAll('.circle')
+        .data(selectedYears);
+
+    var death_2 = death_1.enter()
+        .append('g')
+        .attr('class', 'circle');
+
+    var death_circle = death_2.append('circle')
+        .attr("r", 4)
+        .attr("visibility", `${visibility}`)
+        .style("stroke", "black")
+        .attr("cx", function(d) {
+        return xScale(d.year);
+        })
+        .attr("cy", function(d) {
+        return yScale(d.death);
+        });
+    
+        death_circle.on('mouseover', function(d) {
+            d3.select(this).style('fill', 'red');
+            death_2.append('text')
+                .attr("class", "tooltip")
+                .style("text-anchor", "middle")
+                .text(d.death)
+                .attr("x", xScale(d.year)+2)
+                .attr("y", yScale(d.death)-7)
+                .on("mouseout", function (d) {
+                    d3.select(this).remove();
+                    d3.selectAll(".tooltip").remove();
+                });
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).style('fill', 'black');
+        });
 
     // Clear previous insight, if any
     d3.select('#insights').selectAll('h3').remove();
@@ -177,6 +239,7 @@ function createLineGraph(start, end) {
     .text(d => d.key)
 }
 
+// Generates insights to help user understand information from viz
 function generateInsight1(start, end, selectedYears) {
     var insightStart = selectedYears.filter(d => d.year == start);
     const sumStart = insightStart.reduce((temp, object) => {
