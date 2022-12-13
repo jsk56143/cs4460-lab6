@@ -74,8 +74,7 @@ var svg = d3.select("#steven-svg")
       //   .
       //This is how the forces are being applied for the circles
       var simulation = d3.forceSimulation()
-          .force("center", d3.forceCenter().x(width / 2).y(height / 2))
-          .force("charge", d3.forceManyBody().strength(.1)) // Nodes are attracted one each other of value is > 0
+          .force("center", d3.forceCenter().x(width / 2).y(height / 2)) //This helps center all the circle
           .force("collide", d3.forceCollide().strength(.2).radius(function(d){ return (size(d.TotalDeaths)+3) }).iterations(1)) // Force that avoids circle overlapping
     
       // Apply these forces to the nodes and update their positions.
