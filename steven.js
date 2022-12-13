@@ -38,8 +38,8 @@ function updateDemographic(selectDemographic) {
     
       // Size scale for the bubbles dependent on the totalDeaths
       var size = d3.scaleLinear()
-        .domain([200, 38824])
-        .range([25,100])  // circle will be between 25 and 100 px wide
+        .domain([0, 38824])
+        .range([10,200])  // circle will be between 25 and 100 px wide
     
       svg.selectAll(".node").remove();
       d3.select("#steven").selectAll(".tooltip").remove()
