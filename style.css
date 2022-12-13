@@ -50,3 +50,11 @@ body {
     border: 5px solid #CECCC3;
 }
 
+/** 
+The use of !important allows us to override the other styling preferences
+This is used for when the singular circle nodes are getting hovered
+**/
+.node:hover{
+    stroke-width: 7px !important;
+    opacity: 1 !important;
+}

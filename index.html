@@ -37,12 +37,19 @@
     </div>
 
     <div id="steven">
-        <svg width="600" height="330" style="border: 1px solid #777;">
+        <label for="selectDemographic">Demographic</label>
+        <select id = "selectDemographic" onchange="onDemographicChanged()">
+            <option value = "TotalDeaths">Total</option>
+            <option value = "MaleDeaths">Male Deaths</option>
+            <option value = "FemaleDeaths">Female Deaths</option>
+        </select>
+        <svg id = "steven-svg" width="600" height="330" style="border: 1px solid #777;">
         </svg>
     </div>
-</body>
 <script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="./steven.js"></script>
 <script src="./josh.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="./steven.js"></script>
 <script src="https://d3js.org/colorbrewer.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 </html>
