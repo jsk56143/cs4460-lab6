@@ -39,9 +39,7 @@ var svg = d3.select("#steven-svg")
     }
     var mousemove = function(d) {
       toolTip
-        .html('<u>' + d.Age + '</u>' + "<br>" + d.TotalDeaths + " inhabitants")
-        // .style("left", (d3.mouse(this)[0]+20) + "px")
-        // .style("top", (d3.mouse(this)[1]) + "px")
+        .html('<u>' + d.Age + '</u>' + "<br>" + d.TotalDeaths + " deaths")
     }
     var mouseleave = function(d) {
       toolTip
