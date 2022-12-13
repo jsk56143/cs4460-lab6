@@ -1,12 +1,30 @@
 
+
+function onDemographicChanged() {
+  var selectDemographic = document.getElementById("selectDemographic")
+  var selected = selectDemographic.value
+  updateDemographic(selected)
+}
+
 var width = 800,
     height = 600;
 
 var svg = d3.select("#steven-svg")
             .attr("width", width)
             .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(50, 50)");
+            // .append("g")
+            // .attr("transform", "translate(50, 50)");
+
+svg.append("text")
+.attr("x", width/2)
+.attr("y", 50)
+.attr("text-anchor", "middle")
+.text("US Transportation Fatalities, by Age Group")
+.style("fill", "black")
+.style("font-size", 28)
+.style("font-family", "Arial Black")   
+
+function updateDemographic(selectDemographic) {
 
     d3.csv("cleanedDataByAgeGender.csv", function(data) {
 
@@ -18,8 +36,9 @@ var svg = d3.select("#steven-svg")
       // Size scale for the bubbles dependent on the totalDeaths
       var size = d3.scaleLinear()
         .domain([0, 38824])
-        .range([7,55])  // circle will be between 7 and 55 px wide
+        .range([25,100])  // circle will be between 7 and 55 px wide
     
+      svg.selectAll("circle").remove();
       // creating the tooltip / hover
       var toolTip = d3.select("#steven")
         .append("div")
@@ -38,8 +57,17 @@ var svg = d3.select("#steven-svg")
           .style("opacity", 1)
       }
       var mousemove = function(d) {
+
+        if (selectDemographic == "TotalDeaths") {
+          dataType = d.TotalDeaths
+        } else if (selectDemographic == "MaleDeaths") {
+          dataType = d.MaleDeaths
+        } else {
+          dataType = d.FemaleDeaths
+        }
+
         toolTip
-          .html('<u>' + d.Age + '</u>' + "<br>" + d.TotalDeaths + " deaths")
+          .html('<u>' + d.Age + '</u>' + "<br>" + dataType + " deaths")
       }
       var mouseleave = function(d) {
         toolTip
@@ -55,7 +83,15 @@ var svg = d3.select("#steven-svg")
         //   .attr("text", function(d) {return d.Age})
         .append("circle")
           .attr("class", "node")
-          .attr("r", function(d){ return size(d.TotalDeaths)})
+          .attr("r", function(d){
+            if (selectDemographic == "TotalDeaths") {
+              dataType = d.TotalDeaths
+            } else if (selectDemographic == "MaleDeaths") {
+              dataType = d.MaleDeaths
+            } else {
+              dataType = d.FemaleDeaths
+            }
+            return size(dataType)})
           .attr("cx", width / 2)
           .attr("cy", height / 2)
           .style("fill", function(d){ return color(d.Age)})
@@ -104,7 +140,7 @@ var svg = d3.select("#steven-svg")
       }
   
 })
-
+}
 // var pack = d3.layout.pack()
 //     .size([width, height - 50])
 //     .padding(10);

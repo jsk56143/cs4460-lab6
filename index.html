@@ -12,8 +12,10 @@
 
     <div id="steven">
         <label for="selectDemographic">Demographic</label>
-        <select class = "custom-select" id = "selectDemographic" onchange="onDemographicChanged()">
-            <option selected value = "Total">Total</option>
+        <select id = "selectDemographic" onchange="onDemographicChanged()">
+            <option value = "TotalDeaths">Total</option>
+            <option value = "MaleDeaths">Male Deaths</option>
+            <option value = "FemaleDeaths">Female Deaths</option>
         </select>
         <svg id = "steven-svg" width="600" height="330" style="border: 1px solid #777;">
         </svg>
