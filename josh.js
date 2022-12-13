@@ -234,7 +234,7 @@ function createLineGraph(start, end, visibility) {
     // Clear previous insight, if any
     d3.select('#chart2').selectAll('h3').remove();
 
-    if (end > start) {
+    if (end >= start) {
         generateInsight1(start, end, selectedYears);
     }
 
@@ -287,8 +287,10 @@ function generateInsight1(start, end, selectedYears) {
     chart2.append('h3')
         .text(`${sumStart_formatted} ` + `people died on America's roads in ${start}` + '.');
 
-    chart2.append('h3')
-        .text(`${sumEnd_formatted} ` + `people died on America's roads in ${end}` + '.');
+    if (end > start) {
+        chart2.append('h3')
+            .text(`${sumEnd_formatted} ` + `people died on America's roads in ${end}` + '.');
+    }
 }
 
 
