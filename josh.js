@@ -119,17 +119,17 @@ function createLineGraph(start, end, visibility) {
 
     chartG.append('g').call(yGridLines)
         .attr('class', 'gridline')
-        .attr('transform', 'translate(110,20)');
+        .attr('transform', 'translate(110,0)');
 
     chartG.append('g').call(xGridLines)
         .attr('class', 'gridline')
-        .attr('transform', 'translate(0,620)');
+        .attr('transform', 'translate(0,600)');
 
     // xAxis
     xAxis = d3.axisBottom().scale(xScale).tickFormat(d3.format("d"));
     chartG.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(0,620)")
+        .attr("transform", "translate(0,600)")
         .call(xAxis)
         .append("text")
         .attr("x", (900+70)/2) //middle of the xAxis
@@ -140,7 +140,7 @@ function createLineGraph(start, end, visibility) {
     yAxis = d3.axisLeft().scale(yScale).ticks(10);
     chartG.append("g")
         .attr("class", "axis")
-        .attr("transform", `translate(110,20)`) 
+        .attr("transform", `translate(110,0)`) 
         .call(yAxis)
         .append("text")
         .attr("transform", "rotate(-90)")
@@ -204,16 +204,31 @@ function createLineGraph(start, end, visibility) {
             death_2.append('text')
                 .attr("class", "tooltip")
                 .style("text-anchor", "middle")
-                .text(d.death)
+                .text("Year: " + d.year)
                 .attr("x", xScale(d.year)+2)
-                .attr("y", yScale(d.death)-7)
-                .on("mouseout", function (d) {
-                    d3.select(this).remove();
-                    d3.selectAll(".tooltip").remove();
-                });
+                .attr("y", yScale(d.death)-65);
+            death_2.append('text')
+                .attr("class", "tooltip")
+                .style("text-anchor", "middle")
+                .text("Age: " + d.age)
+                .attr("x", xScale(d.year)+2)
+                .attr("y", yScale(d.death)-50);
+            death_2.append('text')
+                .attr("class", "tooltip")
+                .style("text-anchor", "middle")
+                .text("Deaths: " + d.death)
+                .attr("x", xScale(d.year)+2)
+                .attr("y", yScale(d.death)-35);
+            death_2.append('text')
+                .attr("class", "tooltip")
+                .style("text-anchor", "middle")
+                .text("Rate: " + d.rate)
+                .attr("x", xScale(d.year)+2)
+                .attr("y", yScale(d.death)-20);
         })
         .on('mouseout', function(d) {
             d3.select(this).style('fill', 'black');
+            d3.selectAll(".tooltip").remove();
         });
 
     // Clear previous insight, if any

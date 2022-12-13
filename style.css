@@ -46,6 +46,7 @@ body {
 
 #chart2 {
     float: right;
+    margin-top: 15%;
     border: 5px solid #CECCC3;
 }
 
